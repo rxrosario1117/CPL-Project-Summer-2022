@@ -27,16 +27,16 @@ public class Reader {
 
     }
 
-//    Test readAFile
-    public static void main(String[] args) {
-
-        Reader reader = new Reader();
-
-        String file = reader.readAFile("test.txt");
-
-        System.out.println(file);
-
-    }
+////    Test readAFile
+//    public static void main(String[] args) {
+//
+//        Reader reader = new Reader();
+//
+//        String file = reader.readAFile("test.txt");
+//
+//        System.out.println(file);
+//
+//    }
 
 
 }
