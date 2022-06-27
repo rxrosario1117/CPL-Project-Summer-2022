@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Lexer {
 
     public Reader reader = new Reader();
-    public String fileText = reader.readAFile("test3.txt");
+    public String fileText = reader.readAFile("test1.jl");
     ArrayList<String> tokens = new ArrayList<>();
     ArrayList<String> lexemes = new ArrayList<>();
 
@@ -19,11 +19,31 @@ public class Lexer {
 
         doLexing();
 
-        for(int i = 0; i < tokens.size(); i++){
-            System.out.print(tokens.get(i));
+        System.out.println("===========================================");
+        System.out.println("Lexeme\t\t\t\t\tTokens");
+        System.out.println("-------------------------------------------");
 
-            System.out.println( "|" + lexemes.get(i));
+//        prints out the table to show lexemes tokens
+        for(int i = 0; i < tokens.size(); i++){
+            if (lexemes.get(i).equals("function")){
+                System.out.print(lexemes.get(i) + "\t\t\t\t");
+            }
+            else if(lexemes.get(i).equals("then") || lexemes.get(i).equals("else") || lexemes.get(i).equals("print") || lexemes.get(i).equals("while")){
+                System.out.print(lexemes.get(i) + "\t\t\t\t\t");
+            }
+            else {
+                System.out.print(lexemes.get(i) + "\t\t\t\t\t\t");
+            }
+
+            if (tokens.get(i).equals("function")){
+                System.out.println(tokens.get(i));
+            }
+            else {
+                System.out.println(tokens.get(i));
+            }
         }
+
+        System.out.println("Success!");
     }
 
     public void doLexing(){
@@ -205,8 +225,5 @@ class Main {
     public static void main(String[] args) {
 
         Lexer lexer = new Lexer();
-
-
-
     }
 }

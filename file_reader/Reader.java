@@ -10,9 +10,6 @@ public class Reader {
 
     public String readAFile(String fileName) {
 
-//        fileText = "";
-//        fileText = new String(Files.readAllBytes(Paths.get(fileName)));
-
         try{
 
             return new String(Files.readAllBytes(Paths.get(fileName)));
@@ -26,17 +23,4 @@ public class Reader {
         return "";
 
     }
-
-////    Test readAFile
-//    public static void main(String[] args) {
-//
-//        Reader reader = new Reader();
-//
-//        String file = reader.readAFile("test.txt");
-//
-//        System.out.println(file);
-//
-//    }
-
-
 }
