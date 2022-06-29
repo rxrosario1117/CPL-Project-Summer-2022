@@ -1,104 +1,103 @@
-package lexical_analyzer;
+/*
+ * Class:       CS 4308 Section W02
+ * Term:        Summer 2022
+ * Name:        Ray Rosario
+ * Instructor:  Professor Sharon Perry
+ * Project:     Deliverable P1 Lexer, Lexer.java
+ */
 
-import file_reader.Reader;
+
+package lexical_analyzer;
 
 import java.util.ArrayList;
 
+
 public class Lexer {
 
+//    Creates Reader object to be used to read a given file
     public Reader reader = new Reader();
+
     public String fileText = reader.readAFile("test1.jl");
     ArrayList<String> tokens = new ArrayList<>();
     ArrayList<String> lexemes = new ArrayList<>();
 
     Lexer(){
 
+//        Removes all unnecessary characters from the file text to be left with spaces only
         fileText = fileText.replace("\r", "");
         fileText = fileText.replace("\t", "");
         fileText = fileText.replace("\n", " ");
 
-        doLexing();
+        performLexicalAnalysis();
 
-        System.out.println("===========================================");
-        System.out.println("Lexeme\t\t\t\t\tTokens");
-        System.out.println("-------------------------------------------");
+        printTable();
 
-//        prints out the table to show lexemes tokens
-        for(int i = 0; i < tokens.size(); i++){
-            if (lexemes.get(i).equals("function")){
-                System.out.print(lexemes.get(i) + "\t\t\t\t");
-            }
-            else if(lexemes.get(i).equals("then") || lexemes.get(i).equals("else") || lexemes.get(i).equals("print") || lexemes.get(i).equals("while")){
-                System.out.print(lexemes.get(i) + "\t\t\t\t\t");
-            }
-            else {
-                System.out.print(lexemes.get(i) + "\t\t\t\t\t\t");
-            }
-
-            if (tokens.get(i).equals("function")){
-                System.out.println(tokens.get(i));
-            }
-            else {
-                System.out.println(tokens.get(i));
-            }
-        }
-
-        System.out.println("Success!");
     }
 
-    public void doLexing(){
+    public void performLexicalAnalysis(){
 
+//        Begin searching for tokens and lexemes
         analyzeTextFile();
 
     }
 
+//    Looks through each character of the file text and identifies the tokens and lexemes and adds them to
+//      the token and lexeme array lists respectively
     public void analyzeTextFile(){
 
 //        Array to hold the julia program
-        char[] arr = fileText.toCharArray();
+        char[] fileTextAsCharArray = fileText.toCharArray();
 
+//        Tracks the current lexeme
         String currLex = "";
 
-        for(int i = 0; i < arr.length; i++) {
+//        Identifies the lexeme and adds it to the lexeme array list and adds the respective token to the token array list
+        for(int i = 0; i < fileTextAsCharArray.length; i++) {
 
-            if(Character.isLetter(arr[i]) || Character.isDigit(arr[i])) {
-                currLex += arr[i];
+//            if character is a letter or digit, it's appended onto currLex
+            if(Character.isLetter(fileTextAsCharArray[i]) || Character.isDigit(fileTextAsCharArray[i])) {
+                currLex += fileTextAsCharArray[i];
             }
             else{
 
                 if(currLex.length() != 0) {
 
+//                    Checks if a number is a negative value
                     if(Character.isDigit(currLex.charAt(0)) || currLex.charAt(0) == '-'){
                         tokens.add("literal_integer");
                     }
+//                    Sends the currLex to decipherLetters to find assign the lexeme to the correct token
                     else{
                         tokens.add(decipherLetters(currLex));
                     }
+//                    add the lexeme to the lexeme array list then reset currLex to empty string
                     lexemes.add(currLex);
                     currLex = "";
 
                 }
 
-                if(arr[i] != ' '){
+                if(fileTextAsCharArray[i] != ' '){
 
 //                    handles negative values
-                    if(arr[i] == '-' && Character.isDigit(arr[i+1]) && currLex.length() == 0){
+                    if(fileTextAsCharArray[i] == '-' && Character.isDigit(fileTextAsCharArray[i+1]) && currLex.length() == 0){
                         currLex += "-";
                     }
                     else{
-                        i += checkForOperators(arr, i);
+                        i += checkForOperators(fileTextAsCharArray, i);
                     }
                 }
 
             }
         }
 
+//        Last thing added is the end token and lexeme
         tokens.add("END");
         lexemes.add("end");
 
     }
 
     String decipherLetters(String currLex){
+
         switch (currLex){
             case "function" : {
                 return "FUNCTION";
@@ -126,10 +125,13 @@ public class Lexer {
         }
     }
 
-    int checkForOperators(char[] arr, int index) {
+//    Checks for operators with two characters
+    int checkForOperators(char[] fileTextAsCharArray, int index) {
 
-        String nextLexeme = arr[index] + "" + arr[index + 1];
+//        Strings together the two characters to make the operator
+        String nextLexeme = fileTextAsCharArray[index] + "" + fileTextAsCharArray[index + 1];
 
+//        Switch on nextLexeme to return the number of index to skip so there's no double counting of characters
         switch(nextLexeme){
 
             case "<=": {
@@ -156,12 +158,14 @@ public class Lexer {
                 return 1;
             }
             default: {
-                getSingleOperator(arr[index]);
+//                If no two character operator is found, then look for a single operator
+                getSingleOperator(fileTextAsCharArray[index]);
             }
         }
         return 0;
     }
 
+//    Switch on currLex to add corresponding token and lexeme to the token and lexeme array lists
     void getSingleOperator(char currLex) {
 
         switch (currLex) {
@@ -212,18 +216,40 @@ public class Lexer {
                 break;
             }
             default: {
-                tokens.add("missing something" + currLex);
+                tokens.add("Unrecognized Character: " + currLex);
             }
 
         }
     }
 
-}
+//        prints out the table to show lexemes tokens
+    void printTable(){
 
-class Main {
+        System.out.println("===========================================");
+        System.out.println("Lexeme\t\t\t\t\tTokens");
+        System.out.println("-------------------------------------------");
 
-    public static void main(String[] args) {
+        for(int i = 0; i < tokens.size(); i++){
+            if (lexemes.get(i).equals("function")){
+                System.out.print(lexemes.get(i) + "\t\t\t\t");
+            }
+            else if(lexemes.get(i).equals("then") || lexemes.get(i).equals("else") || lexemes.get(i).equals("print") || lexemes.get(i).equals("while")){
+                System.out.print(lexemes.get(i) + "\t\t\t\t\t");
+            }
+            else {
+                System.out.print(lexemes.get(i) + "\t\t\t\t\t\t");
+            }
 
-        Lexer lexer = new Lexer();
+            if (tokens.get(i).equals("function")){
+                System.out.println(tokens.get(i));
+            }
+            else {
+                System.out.println(tokens.get(i));
+            }
+        }
+
+        System.out.println("Success!");
     }
+
 }
+

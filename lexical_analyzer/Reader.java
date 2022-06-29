@@ -1,12 +1,17 @@
-package file_reader;
+/*
+ * Class:       CS 4308 Section W02
+ * Term:        Summer 2022
+ * Name:        Ray Rosario
+ * Instructor:  Professor Sharon Perry
+ * Project:     Deliverable P1 Lexer, Reader.java
+ */
+
+package lexical_analyzer;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.*;
 
 public class Reader {
-
-//    String fileText;
 
     public String readAFile(String fileName) {
 
