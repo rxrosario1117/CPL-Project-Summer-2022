@@ -1,9 +1,6 @@
 package syntax_analyzer;
 
-import user_exceptions.ClosedParenthesisMissingException;
-import user_exceptions.FunctionKeywordMissingException;
-import user_exceptions.IdentifierKeywordMissingException;
-import user_exceptions.OpenParenthesisMissingException;
+import user_exceptions.*;
 
 import java.util.ArrayList;
 
@@ -40,6 +37,10 @@ public class Parser {
             if(!tokens.get(3).equals("CLOSED_PARENTHESIS")){
                 throw new ClosedParenthesisMissingException();
             }
+
+            System.out.println("==================================================");
+            System.out.println("--------------------Parsing-----------------------");
+            System.out.println("==================================================\n");
 
             printParsingLine();
 
@@ -78,7 +79,77 @@ public class Parser {
 
                     replaceArithmeticExpr();
 
+                    replaceLiteralInt();
+
                     replaceID();
+                }
+
+//                Works through a while stmt
+                if(isWhileStmt()){
+
+                    replaceStmt();
+
+                    replaceWhileStmt();
+
+                    replaceBoolExpr();
+
+                    replaceRelative_Op();
+
+                    replaceArithmeticExpr();
+
+                    replaceID();
+
+                    replaceArithmeticExpr();
+
+                    replaceLiteralInt();
+
+                    replaceBlock();
+
+                    counter++;
+
+                    replaceStmt();
+
+                    replaceAsgmtStmt();
+
+                    replaceID();
+
+                    replaceAsgmtOp();
+
+                    replaceWhileArithExpr();
+
+                    replaceArithmeticExpr();
+
+                    replaceID();
+
+                    replaceLiteralInt();
+
+                    replaceBlock();
+                }
+
+//                Work through an if stmt
+                if(isIfStmt()){
+
+                    replaceStmt();
+
+                    replaceIfStmt();
+
+                    replaceBoolExpr();
+
+                    replaceRelative_Op();
+
+                    replaceArithmeticExpr();
+
+                    replaceID();
+
+                    replaceArithmeticExpr();
+
+                    replaceLiteralInt();
+
+                    replaceBlock();
+
+                    replaceBlock();
+
+                    replaceBlock();
                 }
 
                 counter++;
@@ -86,7 +157,7 @@ public class Parser {
 
 
         } catch (FunctionKeywordMissingException | IdentifierKeywordMissingException | OpenParenthesisMissingException |
-                 ClosedParenthesisMissingException e){
+                 ClosedParenthesisMissingException | SumBeforeEqualsOperatorException e){
             System.out.println(e.getMessage());
         }
     }
@@ -104,10 +175,13 @@ public class Parser {
     }
 
     void replaceArithmeticExpr(){
+
         if(tokens.get(counter).equals(literal_integer)){
             parsingLine = parsingLine.replaceFirst("<arithmetic_expression>", "<literal_integer>");
         } else if(tokens.get(counter).equals(IDENTIFIER)){
             parsingLine = parsingLine.replaceFirst("<arithmetic_expression>", "id");
+        } else if(tokens.get(counter+1).equals(literal_integer)){
+            parsingLine = parsingLine.replaceFirst("end", "<literal_integer>");
         } else if(tokens.get(counter).equals(add_operator) || tokens.get(counter).equals(sub_operator) || tokens.get(counter).equals(mul_operator) || tokens.get(counter).equals(div_operator)){
             parsingLine = parsingLine.replaceFirst("<arithmetic_expression>", "<arithmetic_op> <arithmetic_expression> <arithmetic_expression>");
         }
@@ -115,7 +189,16 @@ public class Parser {
         System.out.println(parsingLine);
     }
 
-    void replaceAsgmtOp(){
+    void replaceWhileArithExpr(){
+        parsingLine = parsingLine.replaceFirst("<arithmetic_expression>", "<arithmetic_expression> <literal_integer>");
+    }
+
+    void replaceAsgmtOp() throws SumBeforeEqualsOperatorException {
+
+        if (lexemes.get(counter).equals("+")) {
+            throw new SumBeforeEqualsOperatorException();
+        }
+
         parsingLine = parsingLine.replaceFirst("<assignment_operator>", lexemes.get(counter));
         counter++;
 
@@ -157,18 +240,27 @@ public class Parser {
         System.out.println(parsingLine);
     }
 
+    boolean isNextTokenElse() {
+        return tokens.get(counter+5).equals(ELSE);
+    }
+
     boolean isNextTokenEnd(){
 
         if(tokens.get(counter+4).equals(END)){
             return true;
+        } else if(tokens.get(counter+5).equals(END)){
+            return true;
+        } else if(tokens.get(counter+6).equals(END)){
+            return true;
         }
+
         return false;
 
     }
 
     String stmtOrStmtBlock(){
 
-        if(isNextTokenEnd()){
+        if(isNextTokenEnd() || isNextTokenElse()){
 
             return "<statement>";
         }
@@ -191,6 +283,7 @@ public class Parser {
     void printParsingLine(){
 
         if(counter == 4){
+
             System.out.println(parsingLine);
         }
         else {
@@ -198,8 +291,6 @@ public class Parser {
             System.out.println(parsingLine);
         }
     }
-
-    //==========
 
     boolean isIfStmt(){
         return tokens.get(counter).equals(IF);
@@ -209,16 +300,25 @@ public class Parser {
         parsingLine = parsingLine.replaceFirst("<if_statement>", "if <boolean_expression> then <block> else <block> end");
 
         System.out.println(parsingLine);
+
+        counter++;
     }
 
     boolean isWhileStmt(){
-        return tokens.get(counter).equals(WHILE);
+
+        if(tokens.get(counter).equals(WHILE)){
+            return true;
+        }
+        else
+            return false;
     }
 
     void replaceWhileStmt() {
         parsingLine = parsingLine.replaceFirst("<while_statement>", "while <boolean_expression> do <block> end");
 
         System.out.println(parsingLine);
+
+        counter++;
     }
 
     boolean isRepeatStmt(){
@@ -229,6 +329,8 @@ public class Parser {
         parsingLine = parsingLine.replaceFirst("<repeat_statement>", "<block> until <boolean_expression>");
 
         System.out.println(parsingLine);
+
+        counter++;
     }
 
     boolean isBooleanExpr(){
@@ -243,23 +345,22 @@ public class Parser {
     }
 
     void replaceRelative_Op() {
-        if(tokens.get(counter).equals(le_operator)){
+
+        if(tokens.get(counter).equals("le_operator")){
             parsingLine = parsingLine.replaceFirst("<relative_op>", "le_operator");
-        } else if (tokens.get(counter).equals(lt_operator)) {
-            parsingLine = parsingLine.replaceFirst("<relative_op>", "lt_operator");
-        } else if (tokens.get(counter).equals(ge_operator)) {
+        } else if (tokens.get(counter).equals("lt_operator")) {
+            parsingLine = parsingLine.replaceFirst("<relative_op>", lt_operator);
+        } else if (tokens.get(counter).equals("ge_operator")) {
             parsingLine = parsingLine.replaceFirst("<relative_op>", "ge_operator");
-        } else if (tokens.get(counter).equals(gt_operator)) {
+        } else if (tokens.get(counter).equals("gt_operator")) {
             parsingLine = parsingLine.replaceFirst("<relative_op>", "gt_operator");
-        } else if (tokens.get(counter).equals(eq_operator)) {
+        } else if (tokens.get(counter).equals("eq_operator")) {
             parsingLine = parsingLine.replaceFirst("<relative_op>", "eq_operator");
-        } else if (tokens.get(counter).equals(ne_operator)) {
-            parsingLine = parsingLine.replaceFirst("<relative_op>", "ne_operator");
+        } else if (tokens.get(counter).equals("ne_operator")) {
+            parsingLine = parsingLine.replaceFirst("<relative_op>", ne_operator);
         }
 
-
         System.out.println(parsingLine);
+        counter++;
     }
-
-
 }

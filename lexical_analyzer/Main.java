@@ -23,7 +23,7 @@ class Main {
 //
 //        String file = sc.nextLine();
 
-        String file = "Test1.jl";
+        String file = "Test3.jl";
 
         String textFromFile = reader.readAFile(file);
 

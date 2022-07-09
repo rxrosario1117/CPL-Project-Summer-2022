@@ -18,13 +18,13 @@ public class Keywords {
     static String sub_operator = "-";
     static String mul_operator = "*";
     static String div_operator = "/";
-    static String IF = "if";
-    static String THEN = "then";
-    static String ELSE = "else";
-    static String WHILE = "while";
-    static String DO = "do";
+    static String IF = "IF";
+    static String THEN = "THEN";
+    static String ELSE = "ELSE";
+    static String WHILE = "WHILE";
+    static String DO = "DO";
     static String PRINT = "PRINT";
-    static String REPEAT = "repeat";
+    static String REPEAT = "REPEAT";
 
     static String END = "END";
 
