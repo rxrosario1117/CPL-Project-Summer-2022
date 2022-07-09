@@ -8,11 +8,31 @@
 
 package lexical_analyzer;
 
+import syntax_analyzer.Parser;
+import java.util.Scanner;
+
 class Main {
+
+    public static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
 
+        Reader reader = new Reader();
+
+//        System.out.print("Please enter a file name: ");
+//
+//        String file = sc.nextLine();
+
+        String file = "Test1.jl";
+
+        String textFromFile = reader.readAFile(file);
+
 //        Calls the Lexer constructor to begin start the lexical analysis
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(textFromFile);
+
+        Parser parser = new Parser(lexer.tokens, lexer.lexemes);
+
+        System.out.println();
+        parser.parse();
     }
 }

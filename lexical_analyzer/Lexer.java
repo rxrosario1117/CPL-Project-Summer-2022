@@ -10,18 +10,24 @@
 package lexical_analyzer;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 
 public class Lexer {
 
-//    Creates Reader object to be used to read a given file
-    public Reader reader = new Reader();
+//    Scanner to take input from the user
+    public Scanner sc = new Scanner(System.in);
 
-    public String fileText = reader.readAFile("test1.jl");
+//    String to store fileText
+    public String fileText;
+
+//    Stores tokens and lexemes in their respective array lists
     ArrayList<String> tokens = new ArrayList<>();
     ArrayList<String> lexemes = new ArrayList<>();
 
-    Lexer(){
+    Lexer(String textFromFile){
+
+        fileText = textFromFile;
 
 //        Removes all unnecessary characters from the file text to be left with spaces only
         fileText = fileText.replace("\r", "");
@@ -30,6 +36,7 @@ public class Lexer {
 
         performLexicalAnalysis();
 
+//        prints out the table to show lexemes tokens
         printTable();
 
     }
@@ -68,7 +75,7 @@ public class Lexer {
                     }
 //                    Sends the currLex to decipherLetters to find assign the lexeme to the correct token
                     else{
-                        tokens.add(decipherLetters(currLex));
+                        tokens.add(assignToken(currLex));
                     }
 //                    add the lexeme to the lexeme array list then reset currLex to empty string
                     lexemes.add(currLex);
@@ -96,7 +103,8 @@ public class Lexer {
 
     }
 
-    String decipherLetters(String currLex){
+//        Switch on currLex to return the token to be added to the tokens array list
+    String assignToken(String currLex){
 
         switch (currLex){
             case "function" : {
@@ -119,6 +127,9 @@ public class Lexer {
             }
             case "end" : {
                 return "END";
+            }
+            case "print" : {
+                return "PRINT";
             }
             default:
                 return "IDENTIFIER";
@@ -165,7 +176,7 @@ public class Lexer {
         return 0;
     }
 
-//    Switch on currLex to add corresponding token and lexeme to the token and lexeme array lists
+//    Switch on currLex to add corresponding token and lexeme to the tokens and lexemes array lists
     void getSingleOperator(char currLex) {
 
         switch (currLex) {
@@ -222,7 +233,7 @@ public class Lexer {
         }
     }
 
-//        prints out the table to show lexemes tokens
+//        prints out array lists, lexemes and tokens, in a nicely formatted table to show lexemes and tokens
     void printTable(){
 
         System.out.println("===========================================");
