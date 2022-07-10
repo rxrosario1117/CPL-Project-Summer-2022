@@ -368,6 +368,7 @@ public class Parser {
 
         System.out.println(parsingLine);
         counter++;
+
     }
 
     //    return the index where the statement ends -- added this at the bottom of Parser.java
