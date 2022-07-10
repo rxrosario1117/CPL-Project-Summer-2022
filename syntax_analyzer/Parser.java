@@ -13,6 +13,7 @@ public class Parser {
     ArrayList<String> lexemes;
     String parsingLine = "<program> -> function id ( ) <block> end";
     static int counter = 4;
+    static int index = 0;
 
 //    Upon the creation of a Parser object the tokens and lexemes are imported to this class
     public Parser(ArrayList<String> tokens, ArrayList<String> lexemes){
@@ -52,6 +53,7 @@ public class Parser {
 //            replaces the nonterminal "<block>" with <statement> | <statement> <block>
             replaceBlock();
 
+//            while loop to work through the given program
             while(counter < tokens.size()){
 
 //                Works through the <assignment_statement> grammar rule
@@ -71,7 +73,7 @@ public class Parser {
                     replaceBlock();
                 }
 
-//                Works through print stmt
+//                Works through the <print_statement> grammar rule
                 if(isPrintStmt()){
                     replaceStmt();
 
@@ -79,9 +81,12 @@ public class Parser {
 
                     replaceArithmeticExpr();
 
-                    replaceLiteralInt();
-
-                    replaceID();
+                    if(tokens.get(counter).equals(literal_integer)){
+                        replaceLiteralInt();
+                    }
+                    else {
+                        replaceID();
+                    }
                 }
 
 //                Works through a while stmt
@@ -155,7 +160,6 @@ public class Parser {
                 counter++;
             }
 
-
         } catch (FunctionKeywordMissingException | IdentifierKeywordMissingException | OpenParenthesisMissingException |
                  ClosedParenthesisMissingException | SumBeforeEqualsOperatorException e){
             System.out.println(e.getMessage());
@@ -205,6 +209,37 @@ public class Parser {
         System.out.println(parsingLine);
     }
 
+    String stmtOrStmtBlock(){
+
+        if(isNextTokenEnd() || isNextTokenElse()){
+
+            return "<statement>";
+        }
+        else {
+            return "<statement> <block>";
+        }
+    }
+
+    //    counter looks 5 indicies ahead to look passed
+    boolean isNextTokenElse() {
+
+        return tokens.get(counter+5).equals(ELSE);
+    }
+
+    boolean isNextTokenEnd(){
+
+        if(tokens.get(counter+4).equals(END)){
+            return true;
+        } else if(tokens.get(counter+5).equals(END)){
+            return true;
+        } else if(tokens.get(counter+6).equals(END)){
+            return true;
+        }
+
+        return false;
+
+    }
+
     void replaceBlock(){
 //        replaces the nonterminal "<block>" with <statement> | <statement> <block>
         parsingLine = parsingLine.replaceFirst("<block>", stmtOrStmtBlock());
@@ -238,35 +273,6 @@ public class Parser {
         parsingLine = parsingLine.replaceFirst("<assignment_statement>", "id <assignment_operator> <arithmetic_expression>");
 
         System.out.println(parsingLine);
-    }
-
-    boolean isNextTokenElse() {
-        return tokens.get(counter+5).equals(ELSE);
-    }
-
-    boolean isNextTokenEnd(){
-
-        if(tokens.get(counter+4).equals(END)){
-            return true;
-        } else if(tokens.get(counter+5).equals(END)){
-            return true;
-        } else if(tokens.get(counter+6).equals(END)){
-            return true;
-        }
-
-        return false;
-
-    }
-
-    String stmtOrStmtBlock(){
-
-        if(isNextTokenEnd() || isNextTokenElse()){
-
-            return "<statement>";
-        }
-        else {
-            return "<statement> <block>";
-        }
     }
 
     boolean isPrintStmt(){
@@ -347,15 +353,15 @@ public class Parser {
     void replaceRelative_Op() {
 
         if(tokens.get(counter).equals("le_operator")){
-            parsingLine = parsingLine.replaceFirst("<relative_op>", "le_operator");
+            parsingLine = parsingLine.replaceFirst("<relative_op>", le_operator);
         } else if (tokens.get(counter).equals("lt_operator")) {
             parsingLine = parsingLine.replaceFirst("<relative_op>", lt_operator);
         } else if (tokens.get(counter).equals("ge_operator")) {
-            parsingLine = parsingLine.replaceFirst("<relative_op>", "ge_operator");
+            parsingLine = parsingLine.replaceFirst("<relative_op>", ge_operator);
         } else if (tokens.get(counter).equals("gt_operator")) {
-            parsingLine = parsingLine.replaceFirst("<relative_op>", "gt_operator");
+            parsingLine = parsingLine.replaceFirst("<relative_op>", gt_operator);
         } else if (tokens.get(counter).equals("eq_operator")) {
-            parsingLine = parsingLine.replaceFirst("<relative_op>", "eq_operator");
+            parsingLine = parsingLine.replaceFirst("<relative_op>", eq_operator);
         } else if (tokens.get(counter).equals("ne_operator")) {
             parsingLine = parsingLine.replaceFirst("<relative_op>", ne_operator);
         }
