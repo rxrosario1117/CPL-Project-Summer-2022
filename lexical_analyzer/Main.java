@@ -3,7 +3,7 @@
  * Term:        Summer 2022
  * Name:        Ray Rosario
  * Instructor:  Professor Sharon Perry
- * Project:     Deliverable P1 Lexer, Main.java
+ * Project:     Deliverable P2 Parser, Main.java
  */
 
 package lexical_analyzer;
@@ -19,11 +19,11 @@ class Main {
 
         Reader reader = new Reader();
 
-//        System.out.print("Please enter a file name: ");
-//
-//        String file = sc.nextLine();
+        System.out.print("Please enter a file name: ");
 
-        String file = "Test3.jl";
+        String file = sc.nextLine();
+
+//        String file = "Test3.jl";
 
         String textFromFile = reader.readAFile(file);
 
@@ -33,6 +33,7 @@ class Main {
         Parser parser = new Parser(lexer.tokens, lexer.lexemes);
 
         System.out.println();
+
         parser.parse();
     }
 }

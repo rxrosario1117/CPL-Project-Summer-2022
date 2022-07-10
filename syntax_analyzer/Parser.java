@@ -1,3 +1,11 @@
+/*
+ * Class:       CS 4308 Section W02
+ * Term:        Summer 2022
+ * Name:        Ray Rosario
+ * Instructor:  Professor Sharon Perry
+ * Project:     Deliverable P2 Parser, Parser.java
+ */
+
 package syntax_analyzer;
 
 import user_exceptions.*;
@@ -11,9 +19,12 @@ public class Parser {
 //    Stores tokens and lexemes from the lexer
     ArrayList<String> tokens;
     ArrayList<String> lexemes;
+
+//    parsingLine is what is updated everytime a subprogram runs and replaces a nonterminal
     String parsingLine = "<program> -> function id ( ) <block> end";
+
+//    Counter starts at 4 to move passed the first 4 tokens in the array list because they are always the same format
     static int counter = 4;
-    static int index = 0;
 
 //    Upon the creation of a Parser object the tokens and lexemes are imported to this class
     public Parser(ArrayList<String> tokens, ArrayList<String> lexemes){
@@ -53,7 +64,8 @@ public class Parser {
 //            replaces the nonterminal "<block>" with <statement> | <statement> <block>
             replaceBlock();
 
-//            while loop to work through the given program
+//            Each subprogram in the while loop has a brief description where that method is defined below
+//            While loop to work through the given program
             while(counter < tokens.size()){
 
 //                Works through the <assignment_statement> grammar rule
@@ -166,18 +178,21 @@ public class Parser {
         }
     }
 
+//    Replaces the <literal_integer> non-terminal with non-terminals based on the grammar rules
     void replaceLiteralInt(){
         parsingLine = parsingLine.replaceFirst("<literal_integer>", lexemes.get(counter));
         System.out.println(parsingLine);
         counter++;
     }
 
+//    Replaces the <id> non-terminal with non-terminals based on the grammar rules
     void replaceID(){
         parsingLine = parsingLine.replaceFirst("id", lexemes.get(counter));
         System.out.println(parsingLine);
         counter++;
     }
 
+//    Replaces the <arithmetic_expression> non-terminal with non-terminals based on the grammar rules
     void replaceArithmeticExpr(){
 
         if(tokens.get(counter).equals(literal_integer)){
@@ -193,10 +208,12 @@ public class Parser {
         System.out.println(parsingLine);
     }
 
+//    Handles the boolean expression, identifier, and literal integer that comes after the while keyword
     void replaceWhileArithExpr(){
         parsingLine = parsingLine.replaceFirst("<arithmetic_expression>", "<arithmetic_expression> <literal_integer>");
     }
 
+//    Replaces the <assignment_operator> non-terminal with non-terminals based on the grammar rules
     void replaceAsgmtOp() throws SumBeforeEqualsOperatorException {
 
         if (lexemes.get(counter).equals("+")) {
@@ -209,6 +226,7 @@ public class Parser {
         System.out.println(parsingLine);
     }
 
+//    Check to see whether to replace <block> with "<statement>" or "<statement> <block>"
     String stmtOrStmtBlock(){
 
         if(isNextTokenEnd() || isNextTokenElse()){
@@ -220,12 +238,13 @@ public class Parser {
         }
     }
 
-    //    counter looks 5 indicies ahead to look passed
+//    Counter looks 5 indices ahead in the tokens array list to look passed a given print statement
     boolean isNextTokenElse() {
 
         return tokens.get(counter+5).equals(ELSE);
     }
 
+//    Check to see if the next keyword token "end"
     boolean isNextTokenEnd(){
 
         if(tokens.get(counter+4).equals(END)){
@@ -240,18 +259,21 @@ public class Parser {
 
     }
 
+//    Replaces the <block> non-terminal with non-terminals based on the grammar rules
     void replaceBlock(){
-//        replaces the nonterminal "<block>" with <statement> | <statement> <block>
+
         parsingLine = parsingLine.replaceFirst("<block>", stmtOrStmtBlock());
 
         System.out.println(parsingLine);
     }
 
+//    Confirms the current token is an assignment operator
     boolean isAssignmentOperation(){
 
         return counter != tokens.size() && tokens.get(counter).equals(IDENTIFIER) && tokens.get(counter + 1).equals(assignment_operator);
     }
 
+//    Replaces the <statement> non-terminal with non-terminals based on the grammar rules
     void replaceStmt(){
 
         if(tokens.get(counter).equals(IDENTIFIER)) {
@@ -269,16 +291,19 @@ public class Parser {
         printParsingLine();
     }
 
+//    Replaces the <assignment_statement> non-terminal with non-terminals based on the grammar rules
     void replaceAsgmtStmt(){
         parsingLine = parsingLine.replaceFirst("<assignment_statement>", "id <assignment_operator> <arithmetic_expression>");
 
         System.out.println(parsingLine);
     }
 
+//    Confirms the current token is a print statement
     boolean isPrintStmt(){
         return lexemes.get(counter).equals("print");
     }
 
+//    Replaces the <print_statement> non-terminal with non-terminals based on the grammar rules
     void replacePrintStmt(){
         parsingLine = parsingLine.replaceFirst("<print_statement>", "print ( <arithmetic_expression> )");
         counter += 2;
@@ -286,6 +311,7 @@ public class Parser {
         System.out.println(parsingLine);
     }
 
+//    Prints out the first line of the parser and then every subsequent line that is called
     void printParsingLine(){
 
         if(counter == 4){
@@ -298,10 +324,12 @@ public class Parser {
         }
     }
 
+//    Confirms the current token is an if statement
     boolean isIfStmt(){
         return tokens.get(counter).equals(IF);
     }
 
+//    Replaces the <if_statement> non-terminal with non-terminals based on the grammar rules
     void replaceIfStmt(){
         parsingLine = parsingLine.replaceFirst("<if_statement>", "if <boolean_expression> then <block> else <block> end");
 
@@ -310,6 +338,7 @@ public class Parser {
         counter++;
     }
 
+//    Confirms the current token is a while statement
     boolean isWhileStmt(){
 
         if(tokens.get(counter).equals(WHILE)){
@@ -319,6 +348,7 @@ public class Parser {
             return false;
     }
 
+//    Replaces the <while_statement> non-terminal with non-terminals based on the grammar rules
     void replaceWhileStmt() {
         parsingLine = parsingLine.replaceFirst("<while_statement>", "while <boolean_expression> do <block> end");
 
@@ -327,10 +357,12 @@ public class Parser {
         counter++;
     }
 
+//    Confirms the current token is a repeat statement
     boolean isRepeatStmt(){
         return tokens.get(counter).equals(REPEAT);
     }
 
+//    Replaces the <repeat_statement> non-terminal with non-terminals based on the grammar rules
     void replaceRepeatStmt() {
         parsingLine = parsingLine.replaceFirst("<repeat_statement>", "<block> until <boolean_expression>");
 
@@ -339,17 +371,20 @@ public class Parser {
         counter++;
     }
 
+//    Confirms the current token is a boolean expression
     boolean isBooleanExpr(){
         return tokens.get(counter).equals(le_operator) || tokens.get(counter).equals(lt_operator) || tokens.get(counter).equals(ge_operator) ||
                 tokens.get(counter).equals(gt_operator) || tokens.get(counter).equals(eq_operator) || tokens.get(counter).equals(ne_operator);
     }
 
+//    Replaces the <boolean_expression> non-terminal with non-terminals based on the grammar rules
     void replaceBoolExpr() {
         parsingLine = parsingLine.replaceFirst("<boolean_expression>", "<relative_op> <arithmetic_expression> <arithmetic_expression>");
 
         System.out.println(parsingLine);
     }
 
+//    Replaces the <relative_op> non-terminal with non-terminals based on the grammar rules
     void replaceRelative_Op() {
 
         if(tokens.get(counter).equals("le_operator")){
@@ -368,7 +403,19 @@ public class Parser {
 
         System.out.println(parsingLine);
         counter++;
+    }
 
-        //
+//    Replaces the <arithmetic_op> non-terminal with non-terminals based on the grammar rules
+    void replaceArithmeticOp(){
+
+        if(tokens.get(counter).equals("add_operator")){
+            parsingLine = parsingLine.replaceFirst("<arithmetic_op>", add_operator);
+        } else if(tokens.get(counter).equals("sub_operator")) {
+            parsingLine = parsingLine.replaceFirst("<arithmetic_op>", sub_operator);
+        } else if(tokens.get(counter).equals("mul_operator")) {
+            parsingLine = parsingLine.replaceFirst("<arithmetic_op>", mul_operator);
+        } else if(tokens.get(counter).equals("div_operator")) {
+            parsingLine = parsingLine.replaceFirst("<arithmetic_op>", div_operator);
+        }
     }
 }
