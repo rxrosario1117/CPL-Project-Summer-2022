@@ -371,23 +371,4 @@ public class Parser {
 
     }
 
-    //    return the index where the statement ends -- added this at the bottom of Parser.java
-    int readStmt(int index){
-        for(int i = index; i < tokens.size(); i++){
-            if(tokens.get(i).equals(IF)){
-                Parser.index = i+1;
-                return i;
-            } else if(tokens.get(i).equals(THEN)){
-                Parser.index = i+1;
-                return i;
-            } else if(tokens.get(i).equals(ELSE)){
-                Parser.index = i+1;
-                return i;
-            } else if(tokens.get(i).equals(END)){
-                Parser.index = i+1;
-                return i;
-            }
-        }
-        return 0;
-    }
 }
