@@ -23,6 +23,9 @@ public class Parser {
 //    parsingLine is what is updated everytime a subprogram runs and replaces a nonterminal
     String parsingLine = "<program> -> function id ( ) <block> end";
 
+//    program is where the program is stored as a string to be used by the interpreter
+public String program;
+
 //    Counter starts at 4 to move passed the first 4 tokens in the array list because they are always the same format
     static int counter = 4;
 
@@ -171,6 +174,8 @@ public class Parser {
 
                 counter++;
             }
+
+            extractProgram();
 
         } catch (FunctionKeywordMissingException | IdentifierKeywordMissingException | OpenParenthesisMissingException |
                  ClosedParenthesisMissingException | SumBeforeEqualsOperatorException e){
@@ -417,5 +422,12 @@ public class Parser {
         } else if(tokens.get(counter).equals("div_operator")) {
             parsingLine = parsingLine.replaceFirst("<arithmetic_op>", div_operator);
         }
+    }
+
+//
+    void extractProgram() {
+
+//        sets program to ignore the left-hand side of the statement
+        program = parsingLine.substring(13);
     }
 }

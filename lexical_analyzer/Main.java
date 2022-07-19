@@ -9,6 +9,7 @@
 package lexical_analyzer;
 
 import syntax_analyzer.Parser;
+
 import java.util.Scanner;
 
 class Main {
@@ -35,5 +36,6 @@ class Main {
         System.out.println();
 
         parser.parse();
+
     }
 }
