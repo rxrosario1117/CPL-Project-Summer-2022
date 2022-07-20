@@ -20,6 +20,9 @@ public class Parser {
     ArrayList<String> tokens;
     ArrayList<String> lexemes;
 
+//    holds any error that may come up, used to tell the interpreter not to interpret any further
+    public ArrayList<String> errorsList = new ArrayList<>();
+
 //    parsingLine is what is updated everytime a subprogram runs and replaces a nonterminal
     String parsingLine = "<program> -> function id ( ) <block> end";
 
@@ -175,10 +178,13 @@ public String program;
                 counter++;
             }
 
+//           sets program for the interpreter to use
             extractProgram();
 
         } catch (FunctionKeywordMissingException | IdentifierKeywordMissingException | OpenParenthesisMissingException |
                  ClosedParenthesisMissingException | SumBeforeEqualsOperatorException e){
+//            program = "error";
+            errorsList.add(e.getMessage());
             System.out.println(e.getMessage());
         }
     }

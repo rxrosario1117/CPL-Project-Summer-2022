@@ -22,10 +22,10 @@ public class Lexer {
     public String fileText;
 
 //    Stores tokens and lexemes in their respective array lists
-    ArrayList<String> tokens = new ArrayList<>();
-    ArrayList<String> lexemes = new ArrayList<>();
+public ArrayList<String> tokens = new ArrayList<>();
+    public ArrayList<String> lexemes = new ArrayList<>();
 
-    Lexer(String textFromFile){
+    public Lexer(String textFromFile){
 
         fileText = textFromFile;
 

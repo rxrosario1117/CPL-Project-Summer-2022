@@ -6,8 +6,8 @@
  * Project:     Deliverable P2 Parser, Main.java
  */
 
-package lexical_analyzer;
-
+import lexical_analyzer.Lexer;
+import lexical_analyzer.Reader;
 import syntax_analyzer.Parser;
 
 import java.util.Scanner;
@@ -20,11 +20,11 @@ class Main {
 
         Reader reader = new Reader();
 
-        System.out.print("Please enter a file name: ");
+//        System.out.print("Please enter a file name: ");
+//
+//        String file = sc.nextLine();
 
-        String file = sc.nextLine();
-
-//        String file = "Test3.jl";
+        String file = "Test3.jl";
 
         String textFromFile = reader.readAFile(file);
 
@@ -36,6 +36,11 @@ class Main {
         System.out.println();
 
         parser.parse();
+
+        InterpreterClass interpreter = new InterpreterClass(parser.program, parser.errorsList);
+
+        interpreter.interpret();
+
 
     }
 }
